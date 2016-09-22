@@ -57,7 +57,7 @@
         }
 
         // Handle case when target is a string or something (possible in deep copy)
-        if (typeof target !== "object" && !jQuery.isFunction(target)) {
+        if (typeof target !== "object" && !myUsuallyFunction.isFunction(target)) {
             target = {};
         }
 
@@ -83,19 +83,19 @@
                     }
 
                     // Recurse if we're merging plain objects or arrays
-                    if (deep && copy && (jQuery.isPlainObject(copy) ||
-                            (copyIsArray = jQuery.isArray(copy)))) {
+                    if (deep && copy && (myUsuallyFunction.isPlainObject(copy) ||
+                            (copyIsArray = myUsuallyFunction.isArray(copy)))) {
 
                         if (copyIsArray) {
                             copyIsArray = false;
-                            clone = src && jQuery.isArray(src) ? src : [];
+                            clone = src && myUsuallyFunction.isArray(src) ? src : [];
 
                         } else {
-                            clone = src && jQuery.isPlainObject(src) ? src : {};
+                            clone = src && myUsuallyFunction.isPlainObject(src) ? src : {};
                         }
 
                         // Never move original objects, clone them
-                        target[name] = jQuery.extend(deep, clone, copy);
+                        target[name] = myUsuallyFunction.extend(deep, clone, copy);
 
                         // Don't bring in undefined values
                     } else if (copy !== undefined) {
@@ -107,7 +107,90 @@
 
         // Return the modified object
         return target;
-    };
+    }
+
+    myUsuallyFunction.extend({
+
+        // Unique for each copy of myUsuallyFunction on the page
+        expando: "myUsuallyFunction" + (version + Math.random()).replace(/\D/g, ""),
+
+        // Assume jQuery is ready without the ready module
+        isReady: true,
+
+        error: function(msg) {
+            throw new Error(msg);
+        },
+
+        noop: function() {},
+
+        isFunction: function(obj) {
+            return myUsuallyFunction.type(obj) === "function";
+        },
+
+        isArray: Array.isArray,
+
+        isWindow: function(obj) {
+            return obj != null && obj === obj.window;
+        },
+
+        isNumeric: function(obj) {
+
+            // As of jQuery 3.0, isNumeric is limited to
+            // strings and numbers (primitives or objects)
+            // that can be coerced to finite numbers (gh-2662)
+            var type = myUsuallyFunction.type(obj);
+            return (type === "number" || type === "string") &&
+
+                // parseFloat NaNs numeric-cast false positives ("")
+                // ...but misinterprets leading-number strings, particularly hex literals ("0x...")
+                // subtraction forces infinities to NaN
+                !isNaN(obj - parseFloat(obj));
+        },
+
+        isPlainObject: function(obj) {
+            var proto, Ctor;
+
+            // Detect obvious negatives
+            // Use toString instead of jQuery.type to catch host objects
+            if (!obj || toString.call(obj) !== "[object Object]") {
+                return false;
+            }
+
+            proto = getProto(obj);
+
+            // Objects with no prototype (e.g., `Object.create( null )`) are plain
+            if (!proto) {
+                return true;
+            }
+
+            // Objects with prototype are plain iff they were constructed by a global Object function
+            Ctor = hasOwn.call(proto, "constructor") && proto.constructor;
+            return typeof Ctor === "function" && fnToString.call(Ctor) === ObjectFunctionString;
+        },
+
+        isEmptyObject: function(obj) {
+
+            /* eslint-disable no-unused-vars */
+            // See https://github.com/eslint/eslint/issues/6125
+            var name;
+
+            for (name in obj) {
+                return false;
+            }
+            return true;
+        },
+
+        type: function(obj) {
+            if (obj == null) {
+                return obj + "";
+            }
+
+            // Support: Android <=2.3 only (functionish RegExp)
+            return typeof obj === "object" || typeof obj === "function" ?
+                class2type[toString.call(obj)] || "object" :
+                typeof obj;
+        },
+    });
     /*日期格式转换为特定字符串
      *date：时间
      *formate:格式字符串，如'yyyy-mm-dd HH:mm:ss'等
