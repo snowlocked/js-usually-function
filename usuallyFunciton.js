@@ -216,6 +216,9 @@
             return format;
         }
     });
+    Date.prototype.format = function(format){
+        return myUsuallyFunction.dateFormat(this,format);
+    };
 
     // 获取数组最大值，最小值，去重
     myUsuallyFunction.extend({
@@ -238,7 +241,7 @@
             for(var i=0,l=arguments.length;i<l;i++){
                 arr.push(arguments[i]);
             }
-            arr=arr.join('.').split('.');
+            arr=arr.join(',').split(',');
             for(var i=0,l=arr.length;i<l;i++){
                 if(tempArr.indexOf(arr[i])==-1){
                     tempArr.push(arr[i])
@@ -246,6 +249,27 @@
             }
             return tempArr;
         },
+    });
+    // 大小排序,min2Max：从小到大；max2Min：从大到小
+    myUsuallyFunction.extend({
+        min2Max:function(){
+            var arr = [];
+            for(var i=0,l=arguments.length;i<l;i++){
+                arr.push(arguments[i]);
+            }
+            return arr.join(',').split(',').sort(function(a,b){
+                return a-b;
+            });
+        },
+        max2Min:function(){
+            var arr = [];
+            for(var i=0,l=arguments.length;i<l;i++){
+                arr.push(arguments[i]);
+            }
+            return arr.join(',').split(',').sort(function(a,b){
+                return b-a;
+            });
+        }
     });
 
     // 精确四则运算
@@ -299,7 +323,7 @@
                     r[i]=0;
                 }
             }
-            m=Math.pow(10,Math.max.apply(null,r));
+            m=Math.pow(10,myUsuallyFunction.max(r));
             for(var i=0,l=arguments.length;i<l;i++){
                 sum+=arguments[i]*m;
             }
@@ -344,8 +368,22 @@
             return ((arg1 * m) % (arg2 * m)) / m;
         }
     });
-
-
+    //给Number类型赋予四则运算方法
+    Number.prototype.accAdd = function(num){
+        return myUsuallyFunction.accAdd(this,num);
+    };
+    Number.prototype.accSub = function(num){
+        return myUsuallyFunction.accSub(this,num);
+    };
+    Number.prototype.accMul = function(num){
+        return myUsuallyFunction.accMul(this,num);
+    }
+    Number.prototype.accDiv = function(num){
+        return myUsuallyFunction.accDiv(this,num);
+    }
+    Number.prototype.accMod = function(num){
+        return myUsuallyFunction.accMod(this,num);
+    }
     var
 
     // Map over myUsuallyFunction in case of overwrite

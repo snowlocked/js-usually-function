@@ -9,4 +9,27 @@
 	
 </body>
 	<script type="text/javascript" src="usuallyFunciton.js"></script>
+	<script type="text/javascript">
+		// var start = new Date();
+		// console.log(myUsuallyFunction.accAdd(3.34,12.12));
+		// var stop = new Date();
+		// console.log(stop-start);
+		var a = new Date();
+		var b = new Date(-1,11,31,23,59,57).getTime()+a.getMilliseconds();
+		console.log(new Date(1999,11,31,23,59,57).getTime()-new Date(99,11,31,23,59,57).getTime());
+		var s = 1;
+		var t = 1000*s;
+		var c,d;
+		setInterval(function(){
+			d = new Date(b);
+			if(d.getFullYear()<0){
+				c = new Date(-d.getFullYear(),d.getMonth(),d.getDate(),d.getHours(),d.getMinutes(),d.getSeconds()).getTime()+d.getMilliseconds();
+				c = new Date(c).setFullYear(-d.getFullYear());
+				document.body.innerHTML = new Date(c).format('公元前yyyy-MM-dd hh:mm:ss.S');
+			}else{
+				document.body.innerHTML = d.format('yyyy-MM-dd hh:mm:ss.S');
+			}						
+			b+=t;  
+		},t)
+	</script>
 </html>
