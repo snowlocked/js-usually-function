@@ -214,6 +214,23 @@
                     format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? n : ("00" + n).substr(("" + n).length));
             }
             return format;
+        },
+        // 设置年月日时间，year必传，其余可选，month为1-12
+        setAccDate:function(year,month,day,hour,minute,second){
+            month=month?month:1;
+            day=day?day:1;
+            hour=hour?hour:0;
+            minute=minute?minute:0;
+            second=second?second:0;
+            var theDate = new Date(year,month-1,day,hour,minute,second);
+            theDate.setFullYear(year);
+            return theDate;
+        },
+        // 计算年龄
+        calAge:function(birthday){
+            var now = new Date().getTime();
+            birthday = birthday.getTime();
+            return Math.floor(new Date(now-birthday).getFullYear()-1970);
         }
     });
     Date.prototype.format = function(format){
@@ -383,6 +400,34 @@
     }
     Number.prototype.accMod = function(num){
         return myUsuallyFunction.accMod(this,num);
+    }
+
+    //生产随机整数及补全位数（针对验证码补0）
+    myUsuallyFunction.extend({
+        random:function(min,max){
+            if(!max){
+                max=min;
+                min=0;
+            }
+            if(min>max){
+                var mid = min;
+                min = max;
+                max = mid;
+            }
+            return Math.floor(Math.random().accMul(max-min+1)+min);
+        },
+        add0:function(num,totalLength){
+            num = num.toString().split('.')[0];
+            l=totalLength-num.length;
+            for(var i=0;i<l;i++){
+                num = "0"+num;
+            }
+            return num;
+        }
+    });
+    // 针对Number补0（如果Number为小数，则去掉小数;为负数，则取正）
+    Number.prototype.add0 = function(totalLength){
+        return myUsuallyFunction.add0(Math.abs(this),totalLength);
     }
     var
 
