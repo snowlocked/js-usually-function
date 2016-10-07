@@ -410,9 +410,7 @@
                 min=0;
             }
             if(min>max){
-                var mid = min;
-                min = max;
-                max = mid;
+                min=[max,max=min][0];
             }
             return Math.floor(Math.random().accMul(max-min+1)+min);
         },
